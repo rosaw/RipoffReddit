@@ -9,4 +9,5 @@ This was created following the Thinkster Mean Stack Tutorial: https://thinkster.
 4. npm start
 
 Should be running on http://localhost:3000/
+
 Data is stored in mongodb://localhost/news
