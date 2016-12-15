@@ -17,6 +17,15 @@
 <!-- definition of inline templates -->
 <body ng-app="flapperNews">
 	<div class="container">
+		<nav class="navbar navbar-default pull-right" ng-controller="NavCtrl">
+			<ul class="nav navbar-nav">
+			  <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
+			  <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
+			  <li ng-hide="isLoggedIn()"><a href="/#/login">Log In</a></li>
+			  <li ng-hide="isLoggedIn()"><a href="/#/register">Register</a></li>
+			</ul>
+		</nav>
+
 	    <div class="row">
 	        <div class="col-md-6 col-md-offset-3">
 	        	<ui-view></ui-view>
@@ -31,10 +40,7 @@
 		</div>
 		<div ng-repeat="post in posts | orderBy: '-upvotes'">
 	        <span style="font-size:20px; margin-left:10px;">
-	  			<a ng-show="post.link" href="{{post.link}}">
-	   				{{post.title}}
-	  			</a>
-			  <span ng-hide="post.link">
+			  <span>
 			    {{post.title}}
 			  </span>
 	        </span>
@@ -44,28 +50,25 @@
 	            ng-click="incrementUpvotes(post)"></span> 
 	        </span>
 	        <span>
-			  <a href="#/posts/{{$index}}">Answer</a>
+			  <a href="#/posts/{{post._id}}">Answer</a>
 			</span>
         </div>
 
-        <form ng-submit="addPost()" style="margin-top: 30px;">
-            <h3>Add a New Post</h3>
+        <form ng-submit="addPost()" ng-show="isLoggedIn()" style="margin-top: 30px;">
+            <h3>Add a New Question</h3>
 
             <div class="form-group">
                 <input type="text" 
                 class="form-control" 
-                placeholder="Title" 
+                placeholder="Question" 
                 ng-model="title"></input>
-            </div>
-            <div class="form-group">
-                <input type="text" 
-                class="form-control" 
-                placeholder="Link" 
-                ng-model="link"></input>
             </div>
 
             <button type="submit" class="btn btn-primary">Post</button>
         </form>
+		<div ng-hide="isLoggedIn()">
+		  <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can add a post.</h3>
+		</div>
 	</script>
 
 	<!-- post comment template -->
@@ -89,6 +92,7 @@
 	  </div>
 
 	  <form ng-submit="addComment()"
+	  	ng-show="isLoggedIn()"
 	    style="margin-top:30px;">
 	    <h3>Add a new comment</h3>
 
@@ -101,8 +105,71 @@
 	    <button type="submit" class="btn btn-primary">Post</button>
 	  </form>
 
+		<div ng-hide="isLoggedIn()">
+		  <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can comment.</h3>
+		</div>
+
 	</script>
 
+	<!-- Registration template -->
+	<script type="text/ng-template" id="/register.html">
+	  <div class="page-header">
+	    <h1> Ripoff Reddit</h1>
+	  </div>
+
+	  <div ng-show="error" class="alert alert-danger row">
+	    <span>{{ error.message }}</span>
+	  </div>
+
+	  <form ng-submit="register()"
+	    style="margin-top:30px;">
+	    <h3>Register</h3>
+
+	    <div class="form-group">
+	      <input type="text"
+	      class="form-control"
+	      placeholder="Username"
+	      ng-model="user.username"></input>
+	    </div>
+	    <div class="form-group">
+	      <input type="password"
+	      class="form-control"
+	      placeholder="Password"
+	      ng-model="user.password"></input>
+	    </div>
+	    <button type="submit" class="btn btn-primary">Register</button>
+	  </form>
+	</script>
+
+	<!-- Login template -->
+	<script type="text/ng-template" id="/login.html">
+	  <div class="page-header">
+	    <h1>Ripoff Reddit</h1>
+	  </div>
+
+	  <div ng-show="error" class="alert alert-danger row">
+	    <span>{{ error.message }}</span>
+	  </div>
+
+	  <form ng-submit="logIn()"
+	    style="margin-top:30px;">
+	    <h3>Log In</h3>
+
+	    <div class="form-group">
+	      <input type="text"
+	      class="form-control"
+	      placeholder="Username"
+	      ng-model="user.username"></input>
+	    </div>
+	    <div class="form-group">
+	      <input type="password"
+	      class="form-control"
+	      placeholder="Password"
+	      ng-model="user.password"></input>
+	    </div>
+	    <button type="submit" class="btn btn-primary">Log In</button>
+	  </form>
+	</script>
 
 </body>
 
